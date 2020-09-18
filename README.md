@@ -1,3 +1,3 @@
 # fabric-network
 
-test
+Hyperledger Fabric Administration (LFS272)
