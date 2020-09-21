@@ -30,3 +30,9 @@ docker exec \
 -e CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/users/Admin@org1.example.com/msp \
 peer1.org1.example.com \
 peer channel list
+
+# Note: after this lab, for me peer0.org1 was not joined to the network yet. I did this manually:
+docker exec \
+-e CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/users/Admin@org1.example.com/msp \
+peer0.org1.example.com \
+peer channel join -b allarewelcome.block \
