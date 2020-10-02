@@ -41,6 +41,15 @@ if [ "$?" -ne 0 ]; then
 fi
 
 
+# The next steps will replace the template's contents with the
+# actual values of the private key file names for the two CAs.
+CURRENT_DIR=$PWD
+cd crypto-config/peerOrganizations/org1.example.com/ca/
+PRIV_KEY=$(ls *_sk)
+cd "$CURRENT_DIR"
+sed -i "s@FABRIC_CA_SERVER_CA_KEYFILE.*@FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/${PRIV_KEY}@g" docker-compose.yml
+
+
 sleep 5s
 
 set -ev
@@ -62,4 +71,3 @@ sleep ${FABRIC_START_TIMEOUT}
 docker exec -e "CORE_PEER_LOCALMSPID=Org1MSP" -e "CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/users/Admin@org1.example.com/msp" peer0.org1.example.com peer channel create -o orderer.example.com:7050 -c allarewelcome -f /etc/hyperledger/configtx/allarewelcome.tx
 # Join peer0.org1.example.com to the channel.
 docker exec -e "CORE_PEER_LOCALMSPID=Org1MSP" -e "CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/users/Admin@org1.example.com/msp" peer0.org1.example.com peer channel join -b allarewelcome.block
-
