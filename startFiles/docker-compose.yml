@@ -16,7 +16,7 @@ services:
       - FABRIC_CA_SERVER_CA_NAME=ca.example.com
       - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.org1.example.com-cert.pem
       # Replace this with the _sk file in crypto-config/peerOrganizations/org1.example.com/ca
-      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/ce7fb6b25853352aaf897edae537d51d626041d382927cb8d54c46ec961e457e_sk
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/54ed3d4b0a80912511687c405dce2de3508c74c5f6c2339761648c34fc54d379_sk
     ports:
       - "7054:7054"
     command: sh -c 'fabric-ca-server start -b admin:adminpw'
@@ -61,8 +61,8 @@ services:
       - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=startFiles_basic
       - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
       - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdbOrg1Peer0:5984
-      - COUCHDB_USER=peer0.Org1
-      - COUCHDB_PASSWORD=password
+      # - COUCHDB_USER=peer0.Org1
+      # - COUCHDB_PASSWORD=password
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric
     command: peer node start
     # command: peer node start --peer-chaincodedev=true
@@ -83,9 +83,9 @@ services:
   couchdbOrg1Peer0:
     container_name: couchdbOrg1Peer0
     image: hyperledger/fabric-couchdb:amd64-0.4.14
-    environment:
-      - COUCHDB_USER=peer0.Org1
-      - COUCHDB_PASSWORD=password
+    # environment:
+    #   - COUCHDB_USER=peer0.Org1
+    #   - COUCHDB_PASSWORD=password
     ports:
       - "5984:5984"
     networks:
@@ -105,8 +105,8 @@ services:
       - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=startFiles_basic # this is different in the lab
       - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
       - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdbOrg1Peer1:5984
-      - COUCHDB_USER=peer1.Org1
-      - COUCHDB_PASSWORD=password
+      # - COUCHDB_USER=peer1.Org1
+      # - COUCHDB_PASSWORD=password
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric
     command: peer node start
     # command: peer node start --peer-chaincodedev=true
@@ -127,9 +127,9 @@ services:
   couchdbOrg1Peer1:
     container_name: couchdbOrg1Peer1
     image: hyperledger/fabric-couchdb:amd64-0.4.14
-    environment:
-      - COUCHDB_USER=peer1.Org1
-      - COUCHDB_PASSWORD=password
+    # environment:
+    #   - COUCHDB_USER=peer1.Org1
+    #   - COUCHDB_PASSWORD=password
     ports:
       - "6984:5984"
     networks:

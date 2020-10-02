@@ -1,3 +1,5 @@
+sleep 5
+
 docker-compose -f docker-compose.yml up -d ca.example.com orderer.example.com couchdbOrg1Peer0 peer0.org1.example.com couchdbOrg1Peer1 peer1.org1.example.com cli
 
 # Fetch genesis block of the channel for peer0
