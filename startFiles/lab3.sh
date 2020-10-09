@@ -1,6 +1,6 @@
-sleep 5
-
 docker-compose -f docker-compose.yml up -d ca.example.com orderer.example.com couchdbOrg1Peer0 peer0.org1.example.com couchdbOrg1Peer1 peer1.org1.example.com cli
+
+sleep 5s
 
 # Fetch genesis block of the channel for peer0
 docker exec -e CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/users/Admin@org1.example.com/msp peer0.org1.example.com peer channel fetch oldest allarewelcome.block -c allarewelcome --orderer orderer.example.com:7050

@@ -5,6 +5,9 @@ sudo ../bin/configtxgen -profile OneOrgOrdererGenesis -outputBlock ./config/gene
 # Start the peer container
 docker-compose -f docker-compose.yml up -d peer0.org1.example.com peer1.org1.example.com cli
 
+# Wait for containers to have started
+sleep 5s
+
 # Fetch genesis block of the channel for peer1
 docker exec -e CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/users/Admin@org1.example.com/msp peer1.org1.example.com peer channel fetch oldest allarewelcome.block -c allarewelcome --orderer orderer.example.com:7050
 
