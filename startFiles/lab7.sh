@@ -57,14 +57,6 @@ docker exec \
   cli bash -c \
   "configtxlator proto_encode --input configBlock.json --type common.Config --output configBlock.pb"
 
-# Encode config file with modifications back to protobuf
-docker exec \
-  -e CORE_PEER_LOCALMSPID=Org1MSP \
-  -e CORE_PEER_ADDRESS=peer0.org1.example.com:7051 \
-  -e CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp \
-  cli bash -c \
-  "configtxlator proto_encode --input configChanges.json --type common.Config --output configChanges.pb"
-
 docker exec \
   -e CORE_PEER_LOCALMSPID=Org1MSP \
   -e CORE_PEER_ADDRESS=peer0.org1.example.com:7051 \
@@ -143,7 +135,13 @@ docker exec \
   cli \
   peer channel list
 
-# Install version 1.0 on each peer
+# Add Org2 to the consortium
+ ../bin/configtxgen -profile OneOrgOrdererGenesis -outputBlock ./config/genesis.block
+../bin/configtxgen -inspectBlock ./config/genesis.block
+docker container rm orderer.example.com -f
+docker-compose -f docker-compose.yml up -d orderer.example.com
+
+# Install version 1.2 on each peer
 docker exec \
   -e CORE_PEER_LOCALMSPID=Org2MSP \
   -e CORE_PEER_ADDRESS=peer0.org2.example.com:7051 \
@@ -181,13 +179,20 @@ docker exec \
   peer chaincode list --installed
 
 
-# Note: this only worked for me when instantiating using Org1
 docker exec \
-  -e CORE_PEER_LOCALMSPID=Org1MSP \
-  -e CORE_PEER_ADDRESS=peer0.org1.example.com:7051 \
-  -e CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp \
+  -e CORE_PEER_LOCALMSPID=Org2MSP \
+  -e CORE_PEER_ADDRESS=peer0.org2.example.com:7051 \
+  -e CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp \
   cli \
   peer chaincode upgrade -n ccForAll -v 1.2 -C allarewelcome -c '{"Args":["Mach","50"]}' --policy "AND('Org1.peer','Org2.peer', OR('Org1.member','Org2.peer'))"
+
+# Note: initially upgrading only worked using Org1. This is because Org2 was not added correctly to the consortium
+# docker exec \
+#   -e CORE_PEER_LOCALMSPID=Org1MSP \
+#   -e CORE_PEER_ADDRESS=peer0.org1.example.com:7051 \
+#   -e CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp \
+#   cli \
+#   peer chaincode upgrade -n ccForAll -v 1.2 -C allarewelcome -c '{"Args":["Mach","50"]}' --policy "AND('Org1.peer','Org2.peer', OR('Org1.member','Org2.peer'))"
 
 # Verify whether the chaincode is instantiated on the channel using Org2!
 docker exec \
